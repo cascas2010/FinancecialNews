@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cjd</groupId>
-    <artifactId>demo2</artifactId>
+    <artifactId>demo3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo2</name>
-    <description>demo2</description>
+    <name>demo3</name>
+    <description>demo3</description>
     <url/>
     <licenses>
         <license/>
