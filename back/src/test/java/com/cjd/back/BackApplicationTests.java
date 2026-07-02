@@ -37,9 +37,6 @@ class BackApplicationTests {
         Assertions.assertNotNull(translate);
 
     }
-    @Test
-    void testFind() {
-        System.out.println("Hello How are you");
-    }
+
 
 }
