@@ -4,6 +4,7 @@ import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.tmt.v20180321.TmtClient;
 import com.tencentcloudapi.tmt.v20180321.models.TextTranslateRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @Date Created in 2026-07-01-17:44
  */
 @Service
+@Slf4j
 public class TencentTranslater implements ITranslate{
     //腾讯翻译一次性最大翻译字符
     private static final int MAX_TRANSLATE_TEXT_LENGTH = 6000;
@@ -47,7 +49,7 @@ public class TencentTranslater implements ITranslate{
      * @return translated full text
      */
     public String transferBySegments(String text) {
-
+        log.info("腾讯翻译开始");
         if (text == null || text.isBlank()) {
             return text;
         }
@@ -107,15 +109,19 @@ public class TencentTranslater implements ITranslate{
                 || current == '\r';
     }
 
-    private String translateOnce(String text) {
+    private String translateOnce(String text)  {
         TextTranslateRequest translateRequest = new TextTranslateRequest();
         translateRequest.setSourceText(text);
         translateRequest.setSource("en");
         translateRequest.setTarget("zh");
         translateRequest.setProjectId(0L);
         try {
-            return tmtClient.TextTranslate(translateRequest).getTargetText();
-        } catch (TencentCloudSDKException e) {
+            String targetText = tmtClient.TextTranslate(translateRequest).getTargetText();
+            //腾讯云限制每秒 5 次
+            Thread.sleep(250);
+            return targetText;
+        } catch (TencentCloudSDKException | InterruptedException e) {
+            log.error("调用腾讯云翻译失败，textLength={}", text.length(), e);
             throw new RuntimeException("腾讯翻译异常"+e.getMessage());
         }
     }
